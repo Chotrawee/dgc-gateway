@@ -33,6 +33,7 @@ import java.util.Base64;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import javax.net.ssl.SSLContext;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -41,6 +42,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.bouncycastle.util.encoders.DecoderException;
 import org.bouncycastle.util.encoders.Hex;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -67,6 +69,7 @@ public class CertificateAuthenticationFilter extends OncePerRequestFilter {
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
+
         try {
             HandlerExecutionChain handlerExecutionChain = requestMap.getHandler(request);
 
@@ -120,6 +123,7 @@ public class CertificateAuthenticationFilter extends OncePerRequestFilter {
         HttpServletResponse httpServletResponse,
         FilterChain filterChain
     ) throws ServletException, IOException {
+
         logger.debug("Checking request for auth headers");
 
         String headerDistinguishedName =
@@ -127,6 +131,10 @@ public class CertificateAuthenticationFilter extends OncePerRequestFilter {
 
         String headerCertThumbprint = normalizeCertificateHash(
             httpServletRequest.getHeader(properties.getCertAuth().getHeaderFields().getThumbprint()));
+
+        logger.debug("headerDistinguishedName: " + headerDistinguishedName);
+        logger.debug("headerCertThumbprint: " + headerCertThumbprint);
+
 
         if (headerDistinguishedName == null || headerCertThumbprint == null) {
             log.error("No thumbprint or distinguish name");

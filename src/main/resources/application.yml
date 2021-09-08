@@ -6,8 +6,14 @@ spring:
       "dev": "h2"
   application:
     name: eu-digital-green-certificates-gateway
+#  datasource:
+#    jndi-name: jdbc/dgc
   datasource:
-    jndi-name: jdbc/dgc
+    url: jdbc:mysql://localhost:3306/dgc
+    username: root
+    password: P@ssw0rd
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    jndi-name: false
   jpa:
     database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
     hibernate:
@@ -36,9 +42,9 @@ dgc:
       password: ${https.proxyPassword:}
   validationRuleSchema: classpath:validation-rule.schema.json
   trustAnchor:
-    keyStorePath: /ec/prod/app/san/dgc/dgc-ta.jks
-    keyStorePass: dgc-p4ssw0rd
-    certificateAlias: dgc_trust_anchor
+    keyStorePath: certs/ta.jks
+    keyStorePass: dgcg-p4ssw0rd
+    certificateAlias: dgcg_trust_anchor
   cert-auth:
     header-fields:
       thumbprint: X-SSL-Client-SHA256

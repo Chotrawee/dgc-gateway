@@ -44,6 +44,8 @@ import javax.validation.Valid;
 import javax.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -59,7 +61,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Validated
 @Slf4j
 public class TrustListController {
-
+    protected final Log logger = LogFactory.getLog(this.getClass());
     private final TrustListService trustListService;
 
     private final GwTrustListMapper trustListMapper;
@@ -99,12 +101,12 @@ public class TrustListController {
     public ResponseEntity<List<TrustListDto>> downloadTrustList(
         @RequestAttribute(CertificateAuthenticationFilter.REQUEST_PROP_COUNTRY) String downloaderCountryCode
     ) {
+        logger.debug("downloaderCountryCode: " + downloaderCountryCode);
+
         List<TrustListDto> trustList = trustListMapper.trustListToTrustListDto(trustListService.getTrustList());
 
         DgcMdc.put(MDC_PROP_DOWNLOAD_KEYS_COUNT, trustList.size());
         DgcMdc.put(MDC_PROP_DOWNLOAD_KEYS_COUNTRY, downloaderCountryCode);
-
-        log.info(DOWNLOADED_TRUSTLIST_LOG_MESSAGE);
 
         return ResponseEntity.ok(trustList);
     }

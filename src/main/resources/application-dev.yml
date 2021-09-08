@@ -11,4 +11,4 @@ springdoc:
     path: /swagger
 dgc:
   trustAnchor:
-    keyStorePath: classpath:keystore/dgc-ta.jks
+    keyStorePath: classpath:ta.jks
